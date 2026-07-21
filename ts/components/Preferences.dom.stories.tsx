@@ -451,6 +451,8 @@ export default {
     hasMessageAudio: true,
     transcriptionApiKey: '',
     onTranscriptionApiKeyChange: action('onTranscriptionApiKeyChange'),
+    transcriptionOpenAiApiKey: '',
+    onTranscriptionOpenAiApiKeyChange: action('onTranscriptionOpenAiApiKeyChange'),
     transcriptionProvider: 'elevenlabs' as const,
     onTranscriptionProviderChange: action('onTranscriptionProviderChange'),
     transcriptionWhisperPath: '',

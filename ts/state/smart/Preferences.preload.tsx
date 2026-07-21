@@ -743,6 +743,8 @@ export function SmartPreferences(): JSX.Element | null {
     'transcriptionApiKey',
     ''
   );
+  const [transcriptionOpenAiApiKey, onTranscriptionOpenAiApiKeyChange] =
+    createItemsAccess('transcriptionOpenAiApiKey', '');
   const [transcriptionProvider, onTranscriptionProviderChange] =
     createItemsAccess('transcriptionProvider', 'elevenlabs');
   const [transcriptionWhisperPath, onTranscriptionWhisperPathChange] =
@@ -1019,6 +1021,8 @@ export function SmartPreferences(): JSX.Element | null {
         onMessageAudioChange={onMessageAudioChange}
         transcriptionApiKey={transcriptionApiKey}
         onTranscriptionApiKeyChange={onTranscriptionApiKeyChange}
+        transcriptionOpenAiApiKey={transcriptionOpenAiApiKey}
+        onTranscriptionOpenAiApiKeyChange={onTranscriptionOpenAiApiKeyChange}
         transcriptionProvider={transcriptionProvider}
         onTranscriptionProviderChange={onTranscriptionProviderChange}
         transcriptionWhisperPath={transcriptionWhisperPath}

@@ -7091,6 +7091,18 @@
     "messageformat": "ElevenLabs (cloud, requires API key)",
     "description": "Radio option for the ElevenLabs transcription provider"
   },
+  "icu:Preferences__transcription-provider-openai": {
+    "messageformat": "OpenAI Whisper (cloud, requires API key)",
+    "description": "Radio option for the OpenAI transcription provider"
+  },
+  "icu:Preferences__transcription-openai-key-placeholder": {
+    "messageformat": "OpenAI API key",
+    "description": "Placeholder for the OpenAI transcription API key input"
+  },
+  "icu:Preferences__transcription-openai-key-description": {
+    "messageformat": "Voice messages are transcribed with OpenAI whisper-1. Get an API key at platform.openai.com. Audio is sent to OpenAI for processing.",
+    "description": "Description under the OpenAI transcription API key input"
+  },
   "icu:Preferences__transcription-provider-whisper": {
     "messageformat": "Whisper (local, via whisper.cpp)",
     "description": "Radio option for the local Whisper transcription provider"

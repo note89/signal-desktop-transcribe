@@ -16,6 +16,7 @@ import {
   shutdownWhisperServer,
   transcribeWithWhisper,
 } from './whisperTranscribe.node.ts';
+import { transcribeWithOpenAi } from './openAiTranscribe.node.ts';
 
 const log = createLogger('transcription_channel');
 
@@ -48,6 +49,17 @@ export function installTranscriptionHandler(): void {
           contentType,
           customBinaryPath: whisperPath,
         });
+      }
+
+      if (provider === 'openai') {
+        const key = apiKey || process.env.OPENAI_API_KEY;
+        if (!key) {
+          return {
+            text: '',
+            error: 'No API key. Add one in Settings → General.'
+          };
+        }
+        return transcribeWithOpenAi({ data, contentType, apiKey: key });
       }
 
       const key = apiKey || process.env.ELEVEN_LABS_API_KEY;

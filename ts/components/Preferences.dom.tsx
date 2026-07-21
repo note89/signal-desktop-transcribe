@@ -151,7 +151,8 @@ export type PropsDataType = {
   hasMediaPermissions: boolean | undefined;
   hasMessageAudio: boolean;
   transcriptionApiKey: string;
-  transcriptionProvider: 'elevenlabs' | 'whisper';
+  transcriptionOpenAiApiKey: string;
+  transcriptionProvider: 'elevenlabs' | 'openai' | 'whisper';
   transcriptionWhisperPath: string;
   hasSealedSenderIndicators: boolean;
   hasMinimizeToAndStartInSystemTray: boolean | undefined;
@@ -340,7 +341,10 @@ type PropsFunctionType = {
   onMediaPermissionsChange: CheckboxChangeHandlerType;
   onMessageAudioChange: CheckboxChangeHandlerType;
   onTranscriptionApiKeyChange: (value: string) => void;
-  onTranscriptionProviderChange: (value: 'elevenlabs' | 'whisper') => void;
+  onTranscriptionOpenAiApiKeyChange: (value: string) => void;
+  onTranscriptionProviderChange: (
+    value: 'elevenlabs' | 'openai' | 'whisper'
+  ) => void;
   onTranscriptionWhisperPathChange: (value: string) => void;
   onMinimizeToAndStartInSystemTrayChange: CheckboxChangeHandlerType;
   onMinimizeToSystemTrayChange: CheckboxChangeHandlerType;
@@ -467,6 +471,7 @@ export function Preferences({
   hasMediaPermissions,
   hasMessageAudio,
   transcriptionApiKey,
+  transcriptionOpenAiApiKey,
   transcriptionProvider,
   transcriptionWhisperPath,
   hasMinimizeToAndStartInSystemTray,
@@ -526,6 +531,7 @@ export function Preferences({
   onMediaPermissionsChange,
   onMessageAudioChange,
   onTranscriptionApiKeyChange,
+  onTranscriptionOpenAiApiKeyChange,
   onTranscriptionProviderChange,
   onTranscriptionWhisperPathChange,
   onMinimizeToAndStartInSystemTrayChange,
@@ -925,13 +931,17 @@ export function Preferences({
                 value: 'elevenlabs' as const,
               },
               {
+                text: i18n('icu:Preferences__transcription-provider-openai'),
+                value: 'openai' as const,
+              },
+              {
                 text: i18n('icu:Preferences__transcription-provider-whisper'),
                 value: 'whisper' as const,
               },
             ]}
             onChange={onTranscriptionProviderChange}
           />
-          {transcriptionProvider === 'elevenlabs' ? (
+          {transcriptionProvider === 'elevenlabs' && (
             <div className="Preferences__padding">
               <Input
                 i18n={i18n}
@@ -946,7 +956,24 @@ export function Preferences({
                 {i18n('icu:Preferences__transcription-api-key-description')}
               </div>
             </div>
-          ) : (
+          )}
+          {transcriptionProvider === 'openai' && (
+            <div className="Preferences__padding">
+              <Input
+                i18n={i18n}
+                disableSpellcheck
+                placeholder={i18n(
+                  'icu:Preferences__transcription-openai-key-placeholder'
+                )}
+                value={transcriptionOpenAiApiKey}
+                onChange={onTranscriptionOpenAiApiKeyChange}
+              />
+              <div className="Preferences__description">
+                {i18n('icu:Preferences__transcription-openai-key-description')}
+              </div>
+            </div>
+          )}
+          {transcriptionProvider === 'whisper' && (
             <div className="Preferences__padding">
               <div className="Preferences__description">
                 {i18n('icu:Preferences__transcription-whisper-description')}

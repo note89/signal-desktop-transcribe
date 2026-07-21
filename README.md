@@ -4,7 +4,7 @@
 # Signal Desktop — with Voice Message Transcription (unofficial fork)
 
 > **This is an unofficial fork.** It adds automatic transcription of voice
-> messages, with two providers: **ElevenLabs** (cloud, API key required) and
+> messages, with three providers: **ElevenLabs** (cloud), **OpenAI whisper-1** (cloud) and
 > **Whisper** via [whisper.cpp](https://github.com/ggml-org/whisper.cpp)
 > (fully local — audio never leaves your machine). Not affiliated with or
 > endorsed by Signal Messenger LLC. Prebuilt macOS (Apple Silicon) downloads:
@@ -14,7 +14,7 @@
 
 - Voice messages transcribe automatically as they scroll into view
 - Transcript renders below the audio player, collapsible (auto-collapsed for 2min+ messages), split into paragraphs at natural speech pauses
-- Provider choice in Settings → General: ElevenLabs (scribe_v2) or local whisper.cpp (auto-downloads the ggml-base model on first use, prewarms a local whisper-server for ~0.3s transcriptions)
+- Provider choice in Settings → General: ElevenLabs (scribe_v2), OpenAI (whisper-1), or local whisper.cpp (auto-downloads the ggml-base model on first use, prewarms a local whisper-server for ~0.3s transcriptions)
 - Transcripts persist on the message — each voice note is transcribed exactly once
 - Regenerate / Retry actions under each transcript
 - All network and subprocess work runs in the Electron main process over IPC; the renderer's no-network sandbox is untouched

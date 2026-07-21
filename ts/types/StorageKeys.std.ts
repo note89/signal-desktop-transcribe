@@ -79,7 +79,8 @@ export type StorageAccessType = {
   'sent-media-quality': SentMediaQualitySettingType;
   audioMessage: boolean;
   transcriptionApiKey: string;
-  transcriptionProvider: 'elevenlabs' | 'whisper';
+  transcriptionOpenAiApiKey: string;
+  transcriptionProvider: 'elevenlabs' | 'openai' | 'whisper';
   transcriptionWhisperPath: string;
   attachmentMigration_isComplete: boolean;
   attachmentMigration_lastProcessedIndex: number;
@@ -341,6 +342,7 @@ export const STORAGE_KEYS_TO_PRESERVE_AFTER_UNLINK = [
   'audio-notification',
   'audioMessage',
   'transcriptionApiKey',
+  'transcriptionOpenAiApiKey',
   'transcriptionProvider',
   'transcriptionWhisperPath',
   'auto-download-update',

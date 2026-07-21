@@ -1,4 +1,4 @@
-export type TranscriptionProviderType = 'elevenlabs' | 'whisper';
+export type TranscriptionProviderType = 'elevenlabs' | 'openai' | 'whisper';
 
 /** UI-facing state of one message's transcription */
 export type TranscriptionEntry =

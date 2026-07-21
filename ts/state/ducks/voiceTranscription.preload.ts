@@ -100,10 +100,12 @@ export function transcribeVoiceMessage(
 ): ThunkAction<void, RootStateType, unknown, VoiceTranscriptionAction> {
   return async (dispatch, getState) => {
     const {
-      transcriptionApiKey: apiKey,
+      transcriptionApiKey: elevenLabsKey,
+      transcriptionOpenAiApiKey: openAiKey,
       transcriptionProvider: provider,
       transcriptionWhisperPath: whisperPath,
     } = getState().items;
+    const apiKey = provider === 'openai' ? openAiKey : elevenLabsKey;
 
     dispatch(setLoading(messageId));
 
