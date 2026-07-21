@@ -34,6 +34,7 @@ import { DurationInSeconds } from '../util/durations/index.std.ts';
 import { focusableSelector } from '../util/focusableSelectors.std.ts';
 import { Modal } from './Modal.dom.tsx';
 import { SearchInput } from './SearchInput.dom.tsx';
+import { Input } from './Input.dom.tsx';
 import { removeDiacritics } from '../util/removeDiacritics.std.ts';
 import { assertDev } from '../util/assert.std.ts';
 import { I18n } from './I18n.dom.tsx';
@@ -149,6 +150,9 @@ export type PropsDataType = {
   hasMediaCameraPermissions: boolean | undefined;
   hasMediaPermissions: boolean | undefined;
   hasMessageAudio: boolean;
+  transcriptionApiKey: string;
+  transcriptionProvider: 'elevenlabs' | 'whisper';
+  transcriptionWhisperPath: string;
   hasSealedSenderIndicators: boolean;
   hasMinimizeToAndStartInSystemTray: boolean | undefined;
   hasMinimizeToSystemTray: boolean | undefined;
@@ -335,6 +339,9 @@ type PropsFunctionType = {
   onMediaCameraPermissionsChange: CheckboxChangeHandlerType;
   onMediaPermissionsChange: CheckboxChangeHandlerType;
   onMessageAudioChange: CheckboxChangeHandlerType;
+  onTranscriptionApiKeyChange: (value: string) => void;
+  onTranscriptionProviderChange: (value: 'elevenlabs' | 'whisper') => void;
+  onTranscriptionWhisperPathChange: (value: string) => void;
   onMinimizeToAndStartInSystemTrayChange: CheckboxChangeHandlerType;
   onMinimizeToSystemTrayChange: CheckboxChangeHandlerType;
   onNotificationAttentionChange: CheckboxChangeHandlerType;
@@ -459,6 +466,9 @@ export function Preferences({
   hasMediaCameraPermissions,
   hasMediaPermissions,
   hasMessageAudio,
+  transcriptionApiKey,
+  transcriptionProvider,
+  transcriptionWhisperPath,
   hasMinimizeToAndStartInSystemTray,
   hasMinimizeToSystemTray,
   hasNotificationAttention,
@@ -515,6 +525,9 @@ export function Preferences({
   onMediaCameraPermissionsChange,
   onMediaPermissionsChange,
   onMessageAudioChange,
+  onTranscriptionApiKeyChange,
+  onTranscriptionProviderChange,
+  onTranscriptionWhisperPathChange,
   onMinimizeToAndStartInSystemTrayChange,
   onMinimizeToSystemTrayChange,
   onNotificationAttentionChange,
@@ -901,6 +914,56 @@ export function Preferences({
                 />
               )}
             </>
+          )}
+        </SettingsRow>
+        <SettingsRow title={i18n('icu:Preferences__transcription-title')}>
+          <SettingsRadio
+            value={transcriptionProvider}
+            options={[
+              {
+                text: i18n('icu:Preferences__transcription-provider-elevenlabs'),
+                value: 'elevenlabs' as const,
+              },
+              {
+                text: i18n('icu:Preferences__transcription-provider-whisper'),
+                value: 'whisper' as const,
+              },
+            ]}
+            onChange={onTranscriptionProviderChange}
+          />
+          {transcriptionProvider === 'elevenlabs' ? (
+            <div className="Preferences__padding">
+              <Input
+                i18n={i18n}
+                disableSpellcheck
+                placeholder={i18n(
+                  'icu:Preferences__transcription-api-key-placeholder'
+                )}
+                value={transcriptionApiKey}
+                onChange={onTranscriptionApiKeyChange}
+              />
+              <div className="Preferences__description">
+                {i18n('icu:Preferences__transcription-api-key-description')}
+              </div>
+            </div>
+          ) : (
+            <div className="Preferences__padding">
+              <div className="Preferences__description">
+                {i18n('icu:Preferences__transcription-whisper-description')}
+              </div>
+              <Input
+                i18n={i18n}
+                disableSpellcheck
+                placeholder={i18n(
+                  'icu:Preferences__transcription-whisper-path-placeholder'
+                )}
+                value={transcriptionWhisperPath}
+                onChange={onTranscriptionWhisperPathChange}
+              />
+              <div className="Preferences__description">
+                {i18n('icu:Preferences__transcription-whisper-path-description')}
+              </div>
+            </div>
           )}
         </SettingsRow>
         <SettingsRow title={i18n('icu:permissions')}>

@@ -25,6 +25,7 @@ import { useComputePeaks } from '../../hooks/useComputePeaks.dom.ts';
 import { durationToPlaybackText } from '../../util/durationToPlaybackText.std.ts';
 import { shouldNeverBeCalled } from '../../util/shouldNeverBeCalled.std.ts';
 import { formatFileSize } from '../../util/formatFileSize.std.ts';
+import type { TranscriptionEntry } from '../../services/transcription/transcribeWords.std.ts';
 
 const { noop } = lodash;
 
@@ -59,6 +60,10 @@ export type OwnProps = Readonly<{
   onCorrupted: () => void;
   computePeaks: (url: string, barCount: number) => Promise<ComputePeaksResult>;
   onPlayMessage: (id: string, position: number) => void;
+
+  // Transcription
+  transcription?: TranscriptionEntry;
+  onTranscribe?: () => void;
 }>;
 
 export type DispatchProps = Readonly<{
@@ -93,6 +98,8 @@ const SPRING_CONFIG = {
 };
 
 const DOT_DIV_WIDTH = 14;
+
+const TRANSCRIPT_AUTO_COLLAPSE_SECONDS = 120;
 
 function PlayedDot({
   played,
@@ -171,11 +178,16 @@ export function MessageAudio(props: Props): JSX.Element {
     pushPanelForConversation,
     setPosition,
     setIsPlaying,
+    transcription,
+    onTranscribe,
   } = props;
 
   const isPlaying = active?.playing ?? false;
 
   const [isPlayedDotVisible, setIsPlayedDotVisible] = useState(!played);
+  const [transcriptToggle, setTranscriptToggle] = useState<
+    'auto' | 'expanded' | 'collapsed'
+  >('auto');
 
   const audioUrl = isDownloaded(attachment) ? attachment.url : undefined;
 
@@ -185,6 +197,12 @@ export function MessageAudio(props: Props): JSX.Element {
     barCount: BAR_COUNT,
     onCorrupted,
   });
+
+  // Long messages start collapsed; the user's own toggle always wins
+  const isTranscriptExpanded =
+    transcriptToggle === 'auto'
+      ? duration < TRANSCRIPT_AUTO_COLLAPSE_SECONDS
+      : transcriptToggle === 'expanded';
 
   let state: State;
 
@@ -398,6 +416,64 @@ export function MessageAudio(props: Props): JSX.Element {
     </div>
   );
 
+  const transcriptSection = transcription && (
+    <div className={`${CSS_BASE}__transcript-container`}>
+      <button
+        type="button"
+        className={`${CSS_BASE}__transcript-toggle`}
+        onClick={() =>
+          setTranscriptToggle(isTranscriptExpanded ? 'collapsed' : 'expanded')
+        }
+        aria-expanded={isTranscriptExpanded}
+      >
+        <span className={`${CSS_BASE}__transcript-label`}>
+          {isTranscriptExpanded ? '▼' : '▶'} Transcript
+        </span>
+      </button>
+      {isTranscriptExpanded && (
+        <div className={`${CSS_BASE}__transcript`}>
+          {transcription.status === 'loading' && (
+            <div className={`${CSS_BASE}__transcript-loading`}>
+              {i18n('icu:MessageAudio--transcribing')}
+            </div>
+          )}
+          {transcription.status === 'done' && (
+            <>
+              <div className={`${CSS_BASE}__transcript-text`}>
+                {transcription.text}
+              </div>
+              {onTranscribe && (
+                <button
+                  type="button"
+                  className={`${CSS_BASE}__transcript-action`}
+                  onClick={onTranscribe}
+                >
+                  {i18n('icu:MessageAudio--transcript-regenerate')}
+                </button>
+              )}
+            </>
+          )}
+          {transcription.status === 'error' && (
+            <>
+              <div className={`${CSS_BASE}__transcript-error`}>
+                {transcription.error}
+              </div>
+              {onTranscribe && (
+                <button
+                  type="button"
+                  className={`${CSS_BASE}__transcript-action`}
+                  onClick={onTranscribe}
+                >
+                  {i18n('icu:MessageAudio--transcript-retry')}
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div
       className={classNames(
@@ -412,6 +488,7 @@ export function MessageAudio(props: Props): JSX.Element {
         {waveform}
       </div>
       {metadata}
+      {transcriptSection}
     </div>
   );
 }

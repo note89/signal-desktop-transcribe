@@ -32,6 +32,7 @@ import { DEFAULT_CONVERSATION_COLOR } from './types/Colors.std.ts';
 import { ThemeType } from './types/Util.std.ts';
 import * as durations from './util/durations/index.std.ts';
 import { drop } from './util/drop.std.ts';
+import { prewarmTranscription } from './services/transcription/transcribeIpc.preload.ts';
 import { explodePromise } from './util/explodePromise.std.ts';
 import { deliveryReceiptQueue } from './util/deliveryReceipt.preload.ts';
 import type { ExplodePromiseResultType } from './util/explodePromise.std.ts';
@@ -1400,6 +1401,10 @@ async function startApp(): Promise<void> {
 
   async function start() {
     // Storage is ready because `start()` is called from `storage.onready()`
+
+    if (itemStorage.get('transcriptionProvider') === 'whisper') {
+      drop(prewarmTranscription());
+    }
 
     initializeAllJobQueues({
       server: {

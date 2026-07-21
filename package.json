@@ -119,6 +119,7 @@
     "fs-xattr": "0.4.0"
   },
   "dependencies": {
+    "@elevenlabs/elevenlabs-js": "2.57.0",
     "@indutny/mac-screen-share": "1.2.5",
     "@indutny/simple-windows-notifications": "2.0.21",
     "@signalapp/libsignal-client": "0.96.4",

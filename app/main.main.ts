@@ -111,6 +111,7 @@ import {
   installFileHandler,
   installWebHandler,
 } from './protocol_filter.node.ts';
+import { installTranscriptionHandler } from './transcription_channel.main.ts';
 import OS from '../ts/util/os/osMain.node.ts';
 import { isNightly, isProduction } from '../ts/util/version.std.ts';
 import { clearTimeoutIfNecessary } from '../ts/util/clearTimeoutIfNecessary.std.ts';
@@ -2133,6 +2134,8 @@ app.on('ready', async () => {
       Boolean(process.env.REACT_DEVTOOLS),
     session: session.defaultSession,
   });
+
+  installTranscriptionHandler();
 
   await mainProcessLogging.initialize(getMainWindow);
 

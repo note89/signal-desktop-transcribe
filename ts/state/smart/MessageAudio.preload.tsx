@@ -1,7 +1,7 @@
 // Copyright 2021 Signal Messenger, LLC
 // SPDX-License-Identifier: AGPL-3.0-only
-import { memo, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { memo, useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import type { RenderingContextType } from '../../types/RenderingContext.d.ts';
 import { MessageAudio } from '../../components/conversation/MessageAudio.dom.tsx';
@@ -19,6 +19,9 @@ import { createLogger } from '../../logging/log.std.ts';
 import { getConversationByIdSelector } from '../selectors/conversations.dom.ts';
 import { getSelectedConversationId } from '../selectors/nav.std.ts';
 import { useNavActions } from '../ducks/nav.std.ts';
+import { transcribeVoiceMessage } from '../ducks/voiceTranscription.preload.ts';
+import type { StateType } from '../reducer.preload.ts';
+import type { TranscriptionEntry } from '../../services/transcription/transcribeWords.std.ts';
 
 const log = createLogger('MessageAudio');
 
@@ -30,6 +33,7 @@ export const SmartMessageAudio = memo(function SmartMessageAudio({
   renderingContext,
   ...props
 }: Props) {
+  const dispatch = useDispatch();
   const active = useSelector(selectAudioPlayerActive);
   const { loadVoiceNoteAudio, setIsPlaying, setPlaybackRate, setPosition } =
     useAudioPlayerActions();
@@ -38,6 +42,20 @@ export const SmartMessageAudio = memo(function SmartMessageAudio({
   const getVoiceNoteData = useSelector(selectVoiceNoteAndConsecutive);
   const getConversationById = useSelector(getConversationByIdSelector);
   const selectedConversationId = useSelector(getSelectedConversationId);
+  const liveTranscription = useSelector(
+    (state: StateType) => state.voiceTranscription[props.id]
+  );
+  const persistedTranscription = useSelector(
+    (state: StateType) =>
+      state.conversations.messagesLookup[props.id]?.voiceTranscription
+  );
+  // Live state wins so a regeneration shows its progress; otherwise fall
+  // back to the transcript persisted on the message
+  const voiceTranscription: TranscriptionEntry | undefined =
+    liveTranscription ??
+    (persistedTranscription
+      ? { status: 'done', text: persistedTranscription }
+      : undefined);
 
   if (!selectedConversationId) {
     throw new Error('No selected conversation');
@@ -76,6 +94,21 @@ export const SmartMessageAudio = memo(function SmartMessageAudio({
     [getVoiceNoteData, loadVoiceNoteAudio, renderingContext, playbackRate]
   );
 
+  const handleTranscribe = useCallback(() => {
+    dispatch(transcribeVoiceMessage(props.id, props.attachment));
+  }, [dispatch, props.id, props.attachment]);
+
+  // Auto-transcribe when attachment is downloaded
+  useEffect(() => {
+    if (
+      props.attachment.url &&
+      !voiceTranscription &&
+      props.attachment.contentType?.startsWith('audio/')
+    ) {
+      handleTranscribe();
+    }
+  }, [props.attachment.url, voiceTranscription, handleTranscribe, props.attachment.contentType]);
+
   return (
     <MessageAudio
       active={messageActive}
@@ -84,6 +117,8 @@ export const SmartMessageAudio = memo(function SmartMessageAudio({
       setIsPlaying={setIsPlaying}
       setPosition={setPosition}
       pushPanelForConversation={pushPanelForConversation}
+      transcription={voiceTranscription}
+      onTranscribe={handleTranscribe}
       {...props}
     />
   );

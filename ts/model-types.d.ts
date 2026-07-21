@@ -190,6 +190,7 @@ type MessageType =
 export type MessageAttributesType = {
   bodyAttachment?: AttachmentType;
   bodyRanges?: ReadonlyArray<RawBodyRange>;
+  voiceTranscription?: string;
   callId?: string;
   canReplyToStory?: boolean;
   changedId?: string;

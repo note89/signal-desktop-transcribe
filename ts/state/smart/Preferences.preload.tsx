@@ -739,6 +739,14 @@ export function SmartPreferences(): JSX.Element | null {
     'audioMessage',
     false
   );
+  const [transcriptionApiKey, onTranscriptionApiKeyChange] = createItemsAccess(
+    'transcriptionApiKey',
+    ''
+  );
+  const [transcriptionProvider, onTranscriptionProviderChange] =
+    createItemsAccess('transcriptionProvider', 'elevenlabs');
+  const [transcriptionWhisperPath, onTranscriptionWhisperPathChange] =
+    createItemsAccess('transcriptionWhisperPath', '');
   const [hasNotificationAttention, onNotificationAttentionChange] =
     createItemsAccess('notification-draw-attention', false);
 
@@ -1009,6 +1017,12 @@ export function SmartPreferences(): JSX.Element | null {
         onMediaCameraPermissionsChange={onMediaCameraPermissionsChange}
         onMediaPermissionsChange={onMediaPermissionsChange}
         onMessageAudioChange={onMessageAudioChange}
+        transcriptionApiKey={transcriptionApiKey}
+        onTranscriptionApiKeyChange={onTranscriptionApiKeyChange}
+        transcriptionProvider={transcriptionProvider}
+        onTranscriptionProviderChange={onTranscriptionProviderChange}
+        transcriptionWhisperPath={transcriptionWhisperPath}
+        onTranscriptionWhisperPathChange={onTranscriptionWhisperPathChange}
         onMinimizeToAndStartInSystemTrayChange={
           onMinimizeToAndStartInSystemTrayChange
         }

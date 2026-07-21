@@ -41,6 +41,7 @@ import { reducer as toast } from './ducks/toast.preload.ts';
 import { reducer as updates } from './ducks/updates.preload.ts';
 import { reducer as user } from './ducks/user.preload.ts';
 import { reducer as username } from './ducks/username.preload.ts';
+import { reducer as voiceTranscription } from './ducks/voiceTranscription.preload.ts';
 
 export const reducer = combineReducers({
   accounts,
@@ -81,6 +82,7 @@ export const reducer = combineReducers({
   updates,
   user,
   username,
+  voiceTranscription,
 });
 
 export type StateType = ReturnType<typeof reducer>;

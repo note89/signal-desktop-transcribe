@@ -172,3 +172,117 @@ $audio-attachment-button-margin-small: 4px;
     }
   }
 }
+
+.module-message__audio-attachment__transcript-container {
+  margin-top: 8px;
+  margin-inline-start: $audio-attachment-button-size +
+    $audio-attachment-button-margin-small;
+}
+
+.module-message__audio-attachment__transcript-toggle {
+  @include mixins.font-caption;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  text-align: start;
+
+  .module-message__audio-attachment--incoming & {
+    @include mixins.light-theme {
+      color: variables.$color-black-alpha-80;
+    }
+
+    @include mixins.dark-theme {
+      color: variables.$color-white-alpha-80;
+    }
+  }
+
+  .module-message__audio-attachment--outgoing & {
+    color: variables.$color-white-alpha-80;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    @include mixins.keyboard-mode {
+      outline: 2px solid variables.$color-ultramarine;
+    }
+
+    .module-message__audio-attachment--outgoing & {
+      @include mixins.keyboard-mode {
+        outline-color: variables.$color-white-alpha-60;
+      }
+    }
+  }
+}
+
+.module-message__audio-attachment__transcript-label {
+  user-select: none;
+  display: inline-block;
+}
+
+.module-message__audio-attachment__transcript {
+  margin-top: 6px;
+  padding: 8px;
+  border-radius: 4px;
+  line-height: 1.4;
+  word-break: break-word;
+
+  .module-message__audio-attachment--incoming & {
+    @include mixins.light-theme {
+      background-color: variables.$color-black-alpha-05;
+      color: variables.$color-black-alpha-90;
+    }
+
+    @include mixins.dark-theme {
+      background-color: variables.$color-white-alpha-10;
+      color: variables.$color-white-alpha-90;
+    }
+  }
+
+  .module-message__audio-attachment--outgoing & {
+    background-color: variables.$color-white-alpha-20;
+    color: variables.$color-white-alpha-90;
+  }
+}
+
+.module-message__audio-attachment__transcript-text {
+  @include mixins.font-body-2;
+  white-space: pre-line;
+}
+
+.module-message__audio-attachment__transcript-loading {
+  @include mixins.font-caption;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.module-message__audio-attachment__transcript-error {
+  @include mixins.font-caption;
+  color: variables.$color-accent-red;
+}
+
+.module-message__audio-attachment__transcript-action {
+  @include mixins.font-caption;
+  display: block;
+  margin-top: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.7;
+  text-decoration: underline;
+  color: inherit;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus {
+    @include mixins.keyboard-mode {
+      outline: 2px solid variables.$color-ultramarine;
+    }
+  }
+}

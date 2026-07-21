@@ -7083,6 +7083,50 @@
     "messageformat": ".5",
     "description": "Button in the voice note message widget that shows the current playback rate of .5x (half speed) and allows the user to toggle to the next rate. Don't include the 'x'."
   },
+  "icu:Preferences__transcription-title": {
+    "messageformat": "Voice message transcription",
+    "description": "Title for the transcription settings section"
+  },
+  "icu:Preferences__transcription-provider-elevenlabs": {
+    "messageformat": "ElevenLabs (cloud, requires API key)",
+    "description": "Radio option for the ElevenLabs transcription provider"
+  },
+  "icu:Preferences__transcription-provider-whisper": {
+    "messageformat": "Whisper (local, via whisper.cpp)",
+    "description": "Radio option for the local Whisper transcription provider"
+  },
+  "icu:Preferences__transcription-whisper-description": {
+    "messageformat": "Runs entirely on this computer — audio never leaves your device. Requires whisper.cpp: brew install whisper-cpp",
+    "description": "Description shown when the Whisper provider is selected"
+  },
+  "icu:Preferences__transcription-whisper-path-placeholder": {
+    "messageformat": "Custom whisper binary path (optional)",
+    "description": "Placeholder for the custom whisper binary path input"
+  },
+  "icu:Preferences__transcription-whisper-path-description": {
+    "messageformat": "Leave empty to auto-detect whisper-server, whisper-cli, or whisper on your system.",
+    "description": "Description under the custom whisper binary path input"
+  },
+  "icu:Preferences__transcription-api-key-placeholder": {
+    "messageformat": "ElevenLabs API key",
+    "description": "Placeholder for the transcription API key input"
+  },
+  "icu:Preferences__transcription-api-key-description": {
+    "messageformat": "Voice messages are transcribed with ElevenLabs. Get an API key at elevenlabs.io. Audio is sent to ElevenLabs for processing.",
+    "description": "Description under the transcription API key input"
+  },
+  "icu:MessageAudio--transcribing": {
+    "messageformat": "Transcribing...",
+    "description": "Loading message shown while a voice message is being transcribed"
+  },
+  "icu:MessageAudio--transcript-regenerate": {
+    "messageformat": "Regenerate",
+    "description": "Button to re-run transcription on a voice message that already has a transcript"
+  },
+  "icu:MessageAudio--transcript-retry": {
+    "messageformat": "Retry",
+    "description": "Button to retry a failed voice message transcription"
+  },
   "icu:emptyInbox__title": {
     "messageformat": "No chats",
     "description": "Shown as a title in the left-pane when the inbox is empty"

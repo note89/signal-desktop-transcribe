@@ -78,6 +78,9 @@ export type StorageAccessType = {
   'read-receipt-setting': boolean;
   'sent-media-quality': SentMediaQualitySettingType;
   audioMessage: boolean;
+  transcriptionApiKey: string;
+  transcriptionProvider: 'elevenlabs' | 'whisper';
+  transcriptionWhisperPath: string;
   attachmentMigration_isComplete: boolean;
   attachmentMigration_lastProcessedIndex: number;
   blocked: ReadonlyArray<string>;
@@ -337,6 +340,9 @@ export const STORAGE_KEYS_TO_PRESERVE_AFTER_UNLINK = [
   'always-relay-calls',
   'audio-notification',
   'audioMessage',
+  'transcriptionApiKey',
+  'transcriptionProvider',
+  'transcriptionWhisperPath',
   'auto-download-update',
   'autoConvertEmoji',
   'badge-count-muted-conversations',
