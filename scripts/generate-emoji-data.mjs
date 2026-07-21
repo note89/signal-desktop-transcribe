@@ -207,7 +207,12 @@ for (const emojiSrc of SRC_EMOJIS_SORTED) {
   }
 
   const emoji = encodeUnified(emojiSrc.unified);
-  assert(isEmoji(emoji), 'Unexpected invalid emoji');
+  if (!isEmoji(emoji)) {
+    // Upstream dataset contains entries isEmoji() rejects; skip rather than
+    // fail the whole build over a single glyph.
+    console.warn(`generate-emoji-data: skipping invalid emoji ${emojiSrc.unified}`);
+    continue;
+  }
 
   if (isDeprecated(emoji)) {
     continue; // drop deprecated emoji
