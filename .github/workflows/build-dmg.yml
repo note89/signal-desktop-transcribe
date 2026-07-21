@@ -1,0 +1,75 @@
+# Rebuilds the macOS DMG monthly (Signal builds expire after 90 days) and
+# uploads it to signal.borrowed.computer. Also runnable manually from the
+# Actions tab. The build-stamp commit at the end counts as repository
+# activity, which stops GitHub from auto-disabling the schedule after 60
+# idle days.
+
+name: build-dmg
+
+on:
+  schedule:
+    - cron: '0 3 1 * *' # monthly, 1st at 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable pnpm
+        run: corepack enable pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+        env:
+          NPM_CONFIG_LOGLEVEL: error
+
+      - name: Generate assets
+        run: |
+          unset SOURCE_DATE_EPOCH
+          pnpm run generate
+
+      - name: Build app
+        run: |
+          unset SOURCE_DATE_EPOCH
+          npm run build:release -- --mac dmg --arm64
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+          SKIP_SIGNING_SCRIPT: 1
+
+      - name: Ad-hoc sign and package DMG
+        run: |
+          codesign --force --deep --sign - release/mac-arm64/Signal.app
+          codesign --verify --deep --strict release/mac-arm64/Signal.app
+          hdiutil create -volname "Signal" \
+            -srcfolder release/mac-arm64/Signal.app \
+            -ov -format UDZO signal-desktop-transcribe-arm64.dmg
+
+      - name: Upload to signal.borrowed.computer
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H 167.71.36.98 >> ~/.ssh/known_hosts
+          scp -i ~/.ssh/deploy_key signal-desktop-transcribe-arm64.dmg \
+            root@167.71.36.98:/opt/signal-site/signal-desktop-transcribe-arm64.dmg
+        env:
+          SSH_KEY: ${{ secrets.SIGNAL_SITE_SSH_KEY }}
+
+      - name: Commit build stamp (keeps the schedule alive)
+        run: |
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > .last-dmg-build
+          git config user.name "dmg-bot"
+          git config user.email "actions@github.com"
+          git add .last-dmg-build
+          git commit -m "chore: DMG built $(cat .last-dmg-build)"
+          git push
